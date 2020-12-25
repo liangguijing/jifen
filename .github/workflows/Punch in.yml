@@ -1,0 +1,35 @@
+name: 签到
+
+on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
+  schedule:
+    - cron: 50 23 * * *  # 7:50 (UCT+8)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: 初始化Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - name: 打卡
+      run: |
+        pip install requests
+        user='${{ secrets.USER }}'
+        password='${{ secrets.PASSWORD }}'
+        flag='0'
+        sckey='${{ secrets.SCKEY }}'
+        
+        python3 jifen.py <<EOF
+        ${user}
+        ${password}
+        ${flag}
+        ${sckey}
+        EOF
