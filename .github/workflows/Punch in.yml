@@ -7,6 +7,7 @@ on:
 #     branches: [ main ]
   schedule:
     - cron: 50 23 * * *  # 7:50 (UCT+8)
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,10 +19,11 @@ jobs:
     - name: 初始化Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.7
+        python-version: 3.8
+    - name: 安装第三方库
+      run: pip install requests
     - name: 打卡
       run: |
-        pip install requests
         user='${{ secrets.USER }}'
         password='${{ secrets.PASSWORD }}'
         flag='0'
