@@ -56,7 +56,9 @@ class JiFen:
     def read_announcement(self):  # 标记已读
         unread_url_list = self._get_unread_announcement()
         if not unread_url_list:
-            print("没有未读公告")
+            msg = "没有未读公告。"
+            self.message += f"\n{msg}"
+            print(msg)
             return
         for unread_url in unread_url_list:
             message_id = get_url_query(unread_url, "detail")
