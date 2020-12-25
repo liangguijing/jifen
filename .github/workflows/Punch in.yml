@@ -6,7 +6,7 @@ on:
 #   pull_request:
 #     branches: [ main ]
   schedule:
-    - cron: 50 23 * * *  # 7:50 (UCT+8)
+    - cron: 40 23 * * *  # 7:40 (UCT+8)
 
 jobs:
   build:
