@@ -1,12 +1,12 @@
 name: 签到
 
 on:
-  push:
-    branches: [ main ]
+#   push:
+#     branches: [ main ]
 #   pull_request:
 #     branches: [ main ]
   schedule:
-    - cron: 40 23 * * *  # 7:40 (UCT+8)
+    - cron: 50 23 * * *  # 7:50 (UCT+8)
 
 jobs:
   build:
