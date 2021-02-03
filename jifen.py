@@ -25,6 +25,7 @@ class JiFen:
         self.sc_key = sc_key
         self.message = ""
         self.user_info = {}
+        self.unread_ann = []
 
         self.get_user_info()
 
