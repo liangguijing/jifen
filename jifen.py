@@ -54,14 +54,15 @@ class JiFen:
         print(response)
 
     def read_announcement(self):  # 标记已读
-        unread_url_list = self._get_unread_announcement()
-        if not unread_url_list:
+        self._get_unread_announcement()
+        if not self.unread_ann:
             msg = "没有未读公告。"
             self.message += f"\n{msg}"
             print(msg)
             return
-        for unread_url in unread_url_list:
-            message_id = get_url_query(unread_url, "detail")
+        for unread in self.unread_ann:
+            message_id = "".join(i for i in unread.keys())
+            click_url = unread[message_id]
             url = "https://pushcenter.jifenzhi.com/pushServer/siteUpdateStatus"
             headers = {
                 "Authorization": "Bearer " + self.user_info["access_token"],
@@ -73,10 +74,13 @@ class JiFen:
                 msg = f"公告已阅读, id:{message_id}"
                 self.message += f"\n{msg}"
                 print(msg)
-                self._get_points(unread_url)
+                self._get_points(message_id, click_url)
 
-    def _get_unread_announcement(self):  # 获取未读公告
-        unread_url_list = []
+    def _get_unread_announcement(self):
+        """
+        获取未读公告
+        :return: [{id: click2url},...]
+        """
         url = "https://pushcenter.jifenzhi.com/pushServer/pushResult"
         params = {
             "channel": "site",
@@ -90,17 +94,16 @@ class JiFen:
         if response.get("code") == "200":
             for l in response["resultData"]["list"]:
                 if l["readStatus"] == 0:
-                    unread_url_list.append(l["click2url"])  # 'http://notice3.jifenzhi.info?detail=16049720071361100001'
-        return unread_url_list
+                    self.unread_ann.append({l["id"]: l["click2url"]})  #
+        return self.unread_ann
 
-    def _get_points(self, unread_url):  # 获取阅读分
-        message_id = get_url_query(unread_url, "detail")
+    def _get_points(self, message_id, click_url):  # 获取阅读分
         url = "https://api.jifenzhi.info/notice3/api/information/award?memberId=15859861448881740002&orgId=15859861422091740001&informationId=" + message_id
         headers = {
             "Authorization": "Bearer " + self.user_info["access_token"],
             "User-Agent": "Mozilla/5.0 (Linux; Android 5.1.1; MI 9 Build/NMF26X; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.136 Mobile Safari/537.36mpm24_android",
             "Content-Type": "application/json;charset=UTF-8",
-            "Referer": unread_url,
+            "Referer": click_url,
         }
         data = f'{{"memberId":"15859861448881740002","orgId":"15859861422091740001","informationId":"{message_id}"}}'
         response = requests.post(url, data=data, headers=headers)
