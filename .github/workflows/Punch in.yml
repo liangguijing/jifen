@@ -27,7 +27,7 @@ jobs:
         user='${{ secrets.USER }}'
         password='${{ secrets.PASSWORD }}'
         flag='0'
-        sckey='${{ secrets.SCKEY }}'
+        sckey=''
         
         python3 jifen.py <<EOF
         ${user}
